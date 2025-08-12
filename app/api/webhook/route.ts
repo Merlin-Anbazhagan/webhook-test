@@ -77,7 +77,9 @@ export async function POST(req: Request) {
     console.log('Products:', products);
     console.log('company Name:',companyName);
    
-    const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies?q=BigC Testing`, {
+    const testName='BigC Testing';
+
+    const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies?q=${encodeURIComponent(testName)}`, {
         headers: {
           Authorization: `Bearer ${process.env.BC_B2B_AUTH_TOKEN}`,
           'Content-Type': 'application/json',
@@ -87,6 +89,7 @@ export async function POST(req: Request) {
     if (!companyRes.ok) throw new Error('Failed to fetch Customer Data');
     const companies: Customer = await companyRes.json();
     console.log('Customer:', companies);
+    
 
     return NextResponse.json({
       success: true,

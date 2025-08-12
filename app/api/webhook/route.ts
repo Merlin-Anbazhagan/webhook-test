@@ -77,7 +77,7 @@ export async function POST(req: Request) {
     console.log('Products:', products);
     console.log('company Name:',companyName);
    
-    const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies?q=${companyName}`, {
+    const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies?q=BigC Testing`, {
         headers: {
           Authorization: `Bearer ${process.env.BC_B2B_AUTH_TOKEN}`,
           'Content-Type': 'application/json',

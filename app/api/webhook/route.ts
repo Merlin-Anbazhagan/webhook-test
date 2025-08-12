@@ -89,7 +89,7 @@ export async function POST(req: Request) {
 
     const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies`, {
         headers: {
-          'X-Auth-Token': process.env.BC_API_TOKEN as string,
+          'authToken': `Bearer ${process.env.BC_B2B_AUTH_TOKEN}`,
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },

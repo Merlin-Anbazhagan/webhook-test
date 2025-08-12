@@ -47,7 +47,7 @@ export async function POST(req: Request) {
     console.log('Webhook Payload:', body);
  
     const orderId = body.data?.id;
-    const companyName =body.data?.billing_address;
+    const companyName =body.data?;
     if (!orderId) {
       return NextResponse.json({ success: false, error: 'Order ID not found in payload' });
     }

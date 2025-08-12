@@ -119,7 +119,8 @@ export async function POST(req: Request) {
 
     const metaFields = companyDetails.extraFields;
     const e8field =metaFields[0].fieldName;
-    console.log('E8 Field',e8field);
+    const e8FieldValue =metaFields[0].fieldValue;
+    console.log('E8 Field',e8FieldValue);
 
     
 

@@ -23,6 +23,7 @@ type Order = {
   coupons?: Coupon[];
   fees?: Fee[];
   customer_id: number;
+  billingAddress: BillingAddress[];
 };
  
 type Customer = {
@@ -40,6 +41,12 @@ type CompanyDetail = {
   companyName: string;
   extraFields?: ExtraField[];
 };
+
+type BillingAddress ={
+    company: string;
+    first_name:string;
+
+}
  
 export async function POST(req: Request) {
   try {
@@ -47,7 +54,7 @@ export async function POST(req: Request) {
     console.log('Webhook Payload:', body);
  
     const orderId = body.data?.id;
-    const companyName =body.data;
+    
     if (!orderId) {
       return NextResponse.json({ success: false, error: 'Order ID not found in payload' });
     }
@@ -63,6 +70,7 @@ export async function POST(req: Request) {
     if (!orderRes.ok) throw new Error('Failed to fetch order details');
     const order: Order = await orderRes.json();
     console.log('Order Details:', order);
+    const companyName = order.billingAddress
  
     // Fetch Products
     const productsRes = await fetch(`https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/orders/${orderId}/products`, {

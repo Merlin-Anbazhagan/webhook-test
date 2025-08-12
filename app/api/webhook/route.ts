@@ -34,7 +34,7 @@ const STORE_HASH = process.env.BC_STORE_HASH;
 const API_TOKEN = process.env.BC_API_TOKEN;
 const B2B_API_TOKEN = process.env.BC_B2B_API_TOKEN;
  
-export async function POST(req: NextRequest) {
+export async function handler(req: NextRequest) {
   try {
     const body = await req.json();
     const orderId = body.data?.id;

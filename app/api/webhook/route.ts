@@ -23,7 +23,7 @@ type Order = {
   coupons?: Coupon[];
   fees?: Fee[];
   customer_id: number;
-  billingAddress: BillingAddress[];
+  billing_address: BillingAddress;
 };
  
 type Customer = {
@@ -70,7 +70,8 @@ export async function POST(req: Request) {
     if (!orderRes.ok) throw new Error('Failed to fetch order details');
     const order: Order = await orderRes.json();
     console.log('Order Details:', order);
-    const companyName = order.billingAddress
+    const billingAddress= order.billing_address;
+    const companyName = billingAddress.company;
  
     // Fetch Products
     const productsRes = await fetch(`https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/orders/${orderId}/products`, {

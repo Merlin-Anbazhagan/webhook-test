@@ -1,71 +1,92 @@
-import { NextRequest, NextResponse } from 'next/server';
+/* eslint-disable no-console */
+import { NextResponse } from 'next/server';
  
-export async function POST(req: NextRequest) {
+type Product = {
+  name: string;
+  sku: string;
+  quantity: number;
+};
+ 
+type Coupon = {
+  code: string;
+  discount: number;
+};
+ 
+type Fee = {
+  name: string;
+  amount: number;
+};
+ 
+type Order = {
+  id: number;
+  products: Product[];
+  coupons?: Coupon[];
+  fees?: Fee[];
+  customer_id: number;
+};
+ 
+type Customer = {
+  id: number;
+  company?: string | null;
+};
+ 
+type ExtraField = {
+  fieldName: string;
+  fieldValue: string;
+};
+ 
+type CompanyDetail = {
+  companyId: number;
+  companyName: string;
+  extraFields?: ExtraField[];
+};
+ 
+export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const orderId = body?.data?.id;
+    console.log('Webhook Payload:', body);
  
+    const orderId = body.data?.id;
     if (!orderId) {
-      return NextResponse.json({ error: 'Order ID not found in webhook' }, { status: 400 });
+      return NextResponse.json({ success: false, error: 'Order ID not found in payload' });
     }
  
-    const storeHash = process.env.BC_STORE_HASH;
-    const token = process.env.BC_API_TOKEN;
+    // Fetch Order Details
+    const orderRes = await fetch(`https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/orders/${orderId}`, {
+      headers: {
+        'X-Auth-Token': process.env.BC_API_TOKEN as string,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    });
+    if (!orderRes.ok) throw new Error('Failed to fetch order details');
+    const order: Order = await orderRes.json();
+    console.log('Order Details:', order);
  
-    if (!storeHash || !token) {
-      return NextResponse.json({ error: 'Missing BigCommerce credentials' }, { status: 500 });
-    }
+    // Fetch Products
+    const productsRes = await fetch(`https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/orders/${orderId}/products`, {
+      headers: {
+        'X-Auth-Token': process.env.BC_API_TOKEN as string,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    });
+    if (!productsRes.ok) throw new Error('Failed to fetch order products');
+    const products: Product[] = await productsRes.json();
+    console.log('Products:', products);
  
-    const baseUrl = `https://api.bigcommerce.com/stores/${storeHash}/v2/orders/${orderId}`;
+   
+    return NextResponse.json({
+      success: true,
+      order,
+      products
+     // customer,
+      //companyId,
+      //e8CompanyId,
+    });
  
-    const headers = {
-      'X-Auth-Token': token,
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    };
- 
-    // Step 1: Get main order details
-    const orderRes = await fetch(`${baseUrl}`, { headers });
-    if (!orderRes.ok) throw new Error(`Order fetch failed: ${orderRes.status}`);
-    const orderDetails: Record<string, unknown> = await orderRes.json();
- 
-    // Step 2: Get sub-resources
-    const subEndpoints = ['products', 'fees', 'shipping_addresses', 'consignments', 'coupons'];
- 
-    const subData: Record<string, unknown> = {};
- 
-    await Promise.all(
-      subEndpoints.map(async (key) => {
-        try {
-          const res = await fetch(`${baseUrl}/${key}`, { headers });
-          if (res.ok) {
-            subData[key] = await res.json();
-          } else {
-            subData[key] = { error: `Failed to fetch ${key}` };
-          }
-        } catch (err) {
-          subData[key] = { error: `Exception while fetching ${key}` };
-        }
-      })
-    );
- 
-    // Combine all data
-    const fullOrder = {
-      ...orderDetails,
-      ...subData,
-    };
- 
-    console.log('✅ Full Order Details:', fullOrder);
- 
-    return NextResponse.json({ message: 'Order processed', order: fullOrder });
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      console.error('❌ Failed to process order:', err.message);
-    } else {
-      console.error('❌ Unknown error:', err);
-    }
- 
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  } catch (error) {
+    console.error('Error in webhook:', error);
+    return NextResponse.json({ success: false, error: (error as Error).message });
   }
 }
- 

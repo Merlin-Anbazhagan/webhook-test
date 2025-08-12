@@ -26,9 +26,10 @@ type Order = {
   billing_address: BillingAddress;
 };
  
-type Customer = {
-  id: number;
-  company?: string | null;
+type Company = {
+  companyId: number;
+  companyName?: string | null;
+  extraFields: ExtraField;
 };
  
 type ExtraField = {
@@ -36,11 +37,6 @@ type ExtraField = {
   fieldValue: string;
 };
  
-type CompanyDetail = {
-  companyId: number;
-  companyName: string;
-  extraFields?: ExtraField[];
-};
 
 type BillingAddress ={
     company: string;
@@ -86,10 +82,10 @@ export async function POST(req: Request) {
     console.log('Products:', products);
     console.log('company Name:',companyName);
    
-    const testName='BigC Testing';
+    
 
-    const param1 =encodeURIComponent(testName);
-    const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies?q=${param1}`, {
+    const encodedParam =encodeURIComponent(companyName);
+    const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies?q=${encodedParam}`, {
         headers: {
           'authToken': process.env.BC_B2B_AUTH_TOKEN as string,
           'Content-Type': 'application/json',
@@ -97,9 +93,27 @@ export async function POST(req: Request) {
         },
       });
     if (!companyRes.ok) throw new Error('Failed to fetch Customer Data');
-    const companies: Customer = await companyRes.json();
+    const companies: Company = await companyRes.json();
     console.log('Customer:', companies);
-    console.log('encoded param',param1);
+    console.log('encoded param',encodedParam);
+
+    const companyNum = companies.companyId;
+
+    console.log('Company Number',companyNum);
+
+    const comPanyDeatilsRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies/${companyNum}`, {
+        headers: {
+          'authToken': process.env.BC_B2B_AUTH_TOKEN as string,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+    if (!comPanyDeatilsRes.ok) throw new Error('Failed to fetch Company Data');
+    const companyDetails: Company =await comPanyDeatilsRes.json();
+    const metaFields = companyDetails.extraFields;
+    const e8field =metaFields.fieldName;
+    console.log('E8 Field',e8field);
+
     
 
     return NextResponse.json({

@@ -29,7 +29,7 @@ type Order = {
 type Company = {
   companyId: number;
   companyName?: string | null;
-  extraFields: ExtraField;
+  extraFields: ExtraField[];
   companyEmail: string;
 };
  
@@ -112,9 +112,13 @@ export async function POST(req: Request) {
         },
       });
     if (!comPanyDeatilsRes.ok) throw new Error('Failed to fetch Company Data');
-    const companyDetails: Company =await comPanyDeatilsRes.json();
+    const companyReponseDeatils = await comPanyDeatilsRes.json();
+    const companyDetails: Company =companyReponseDeatils.data;
+
+    console.log('ENtire Company Details',companyDetails);
+
     const metaFields = companyDetails.extraFields;
-    const e8field =metaFields.fieldName;
+    const e8field =metaFields[0].fieldName;
     console.log('E8 Field',e8field);
 
     

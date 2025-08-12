@@ -47,7 +47,7 @@ export async function POST(req: Request) {
     console.log('Webhook Payload:', body);
  
     const orderId = body.data?.id;
-    const companyName =body.data?.billing_address?.company;
+    const companyName =body.data?.billing_address;
     if (!orderId) {
       return NextResponse.json({ success: false, error: 'Order ID not found in payload' });
     }
@@ -79,7 +79,7 @@ export async function POST(req: Request) {
    
     const testName='BigC Testing';
 
-    const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies?q=${encodeURIComponent(testName)}`, {
+    const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies`, {
         headers: {
           Authorization: `Bearer ${process.env.BC_B2B_AUTH_TOKEN}`,
           'Content-Type': 'application/json',

@@ -85,18 +85,18 @@ export async function POST(req: Request) {
     console.log('Products:', products);
     console.log('company Name:',companyName);
    
-    // const testName='BigC Testing';
+    const testName='BigC Testing';
 
-    // const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies`, {
-    //     headers: {
-    //       'X-Auth-Token': process.env.BC_B2B_AUTH_TOKEN as string,
-    //       'Content-Type': 'application/json',
-    //       Accept: 'application/json',
-    //     },
-    //   });
-    // if (!companyRes.ok) throw new Error('Failed to fetch Customer Data');
-    // const companies: Customer = await companyRes.json();
-    // console.log('Customer:', companies);
+    const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies`, {
+        headers: {
+          'X-Auth-Token': process.env.BC_B2B_AUTH_TOKEN as string,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+    if (!companyRes.ok) throw new Error('Failed to fetch Customer Data');
+    const companies: Customer = await companyRes.json();
+    console.log('Customer:', companies);
     
 
     return NextResponse.json({

@@ -30,6 +30,7 @@ type Company = {
   companyId: number;
   companyName?: string | null;
   extraFields: ExtraField;
+  companyEmail: string;
 };
  
 type ExtraField = {
@@ -93,7 +94,9 @@ export async function POST(req: Request) {
         },
       });
     if (!companyRes.ok) throw new Error('Failed to fetch Customer Data');
-    const companies: Company = await companyRes.json();
+    const responseBody = await companyRes.json();
+    const companies :Company = responseBody.data;
+   // const companies: Company = await companyRes.json();
     console.log('Customer:', companies);
     console.log('encoded param',encodedParam);
 

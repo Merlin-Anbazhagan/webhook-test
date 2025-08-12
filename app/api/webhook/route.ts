@@ -75,7 +75,7 @@ export async function POST(req: Request) {
     if (!productsRes.ok) throw new Error('Failed to fetch order products');
     const products: Product[] = await productsRes.json();
     console.log('Products:', products);
- 
+    console.log('company Name:',companyName);
    
     const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies?q=${companyName}`, {
         headers: {

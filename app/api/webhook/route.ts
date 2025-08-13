@@ -98,7 +98,7 @@ const productDetails = products.map(product => ({
   
 const enrichedOrder = {
     ...order,
-    products_summary: productDetails,
+    products: productDetails,
   };
 
 console.log("Merged Output",enrichedOrder);

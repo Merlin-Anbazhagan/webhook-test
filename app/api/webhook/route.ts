@@ -100,7 +100,7 @@ export async function POST(req: Request) {
     const userDetails: Customer = await customerRes.json();
     const companyName = userDetails.company;
     console.log('User Reponse', userDetails);
-     console.log('company Name:',companyName);
+    console.log('company Name:',companyName);
 
 
     const encodedParam =encodeURIComponent(companyName);
@@ -133,13 +133,31 @@ export async function POST(req: Request) {
     const companyReponseDeatils = await comPanyDeatilsRes.json();
     const companyDetails: Company =companyReponseDeatils.data;
 
-    console.log('ENtire Company Details',companyDetails);
+    console.log('Entire Company Details',companyDetails);
+
+
+      const combinedData ={
+          orderResponseData : order,
+          productResponseData : products
+      };
+
+
+
 
     const metaFields = companyDetails.extraFields;
     const e8field =metaFields[0].fieldName;
     const e8FieldValue =metaFields[0].fieldValue;
     console.log('E8 Field',e8FieldValue);
-    console.log('Test changes');
+
+    
+    console.log('Test changes',combinedData);
+
+
+
+
+
+
+
     
 
     return NextResponse.json({

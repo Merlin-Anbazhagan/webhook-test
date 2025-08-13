@@ -84,6 +84,17 @@ export async function POST(req: Request) {
     console.log('company Name:',companyName);
    
     
+// To Fetch customer Data
+    const customerRes = await fetch(`https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/customers/${order.customer_id}`, {
+      headers: {
+        'X-Auth-Token': process.env.BC_API_TOKEN as string,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    });
+  if (!customerRes.ok) throw new Error('Failed to fetch Customer Data');
+    const customResponseBody = await customerRes.json();
+    console.log('User Reponse', customResponseBody);
 
     const encodedParam =encodeURIComponent(companyName);
     const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies?q=${encodedParam}`, {

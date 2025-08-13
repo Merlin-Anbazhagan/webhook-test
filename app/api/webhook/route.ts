@@ -2,26 +2,15 @@
 import { NextResponse } from 'next/server';
  
 type Product = {
-  id: number;
   name: string;
   sku: string;
   quantity: number;
-  order_id: number;
-  product_id: number;
-  variant_id: number;
-  name_customer: string;
-  name_merchant: string;
-  is_refunded: boolean;
-  quantity_refunded: number;
-  refund_amount:DoubleRange;
-  return_id : number;
-  wrapping_id: number;
-  wrapping_name: string,
-  base_wrapping_cost: DoubleRange;
-  is_bundled_product: boolean;
-  quantity_shipped: number;
 };
  
+type Coupon = {
+  code: string;
+  discount: number;
+};
  
 type Fee = {
   name: string;
@@ -31,13 +20,10 @@ type Fee = {
 type Order = {
   id: number;
   products: Product[];
+  coupons?: Coupon[];
   fees?: Fee[];
   customer_id: number;
   billing_address: BillingAddress;
-  E8_companyId: number;
-  companyId: number,
-  companyName: string,
-
 };
  
 type Company = {
@@ -85,9 +71,7 @@ export async function POST(req: Request) {
     if (!orderRes.ok) throw new Error('Failed to fetch order details');
     const order: Order = await orderRes.json();
     console.log('Order Details:', order);
-  //  const billingAddress= order.billing_address;
-    //const companyName = billingAddress.company;
- 
+  
     // Fetch Products
     const productsRes = await fetch(`https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/orders/${orderId}/products`, {
       headers: {
@@ -102,88 +86,29 @@ export async function POST(req: Request) {
   
    
     
-// To Fetch customer Data
-    const customerRes = await fetch(`https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/customers/${order.customer_id}`, {
-      headers: {
-        'X-Auth-Token': process.env.BC_API_TOKEN as string,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    });
-  if (!customerRes.ok) throw new Error('Failed to fetch Customer Data');
-    const userDetails: Customer = await customerRes.json();
-    const companyName = userDetails.company;
-    console.log('User Reponse', userDetails);
-    console.log('company Name:',companyName);
+const productDetails = products.map(product => ({
+   // product_id: product.product_id,
+    name: product.name,
+    sku: product.sku,
+    quantity: product.quantity
+   // price_ex_tax: product.price_ex_tax,
+  //  total_ex_tax: product.total_ex_tax,
+  }));
 
+  
+const enrichedOrder = {
+    ...order,
+    products_summary: productDetails,
+  };
 
-    const encodedParam =encodeURIComponent(companyName);
-    const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies?q=${encodedParam}`, {
-        headers: {
-          'authToken': process.env.BC_B2B_AUTH_TOKEN as string,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      });
-    if (!companyRes.ok) throw new Error('Failed to fetch Customer Data');
-    const responseBody = await companyRes.json();
-    const companies :Company[] = responseBody.data;
-   // const companies: Company = await companyRes.json();
-    console.log('Customer:', companies);
-    console.log('encoded param',encodedParam);
-
-    const companyNum = companies[0].companyId;
-
-    console.log('Company Number',companyNum);
-
-    const comPanyDeatilsRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies/${companyNum}`, {
-        headers: {
-          'authToken': process.env.BC_B2B_AUTH_TOKEN as string,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      });
-    if (!comPanyDeatilsRes.ok) throw new Error('Failed to fetch Company Data');
-    const companyReponseDeatils = await comPanyDeatilsRes.json();
-    const companyDetails: Company =companyReponseDeatils.data;
-
-    console.log('Entire Company Details',companyDetails);
-
-
-     order.E8_companyId =1111;
-     for (let index = 0; index < products.length; index++) {
-      order.products[index].id = products[index].id;
-      order.products[index].order_id = products[index].order_id;
-      order.products[index].product_id = products[index].product_id;
-      order.products[index].variant_id = products[index].variant_id;
-      order.products[index].sku = products[index].sku;
-    }
-
-
-
-
-    const metaFields = companyDetails.extraFields;
-    const e8field =metaFields[0].fieldName;
-    const e8FieldValue =metaFields[0].fieldValue;
-    console.log('E8 Field',e8FieldValue);
-
-    
-    console.log('Test changes',order);
-
-
-
-
-
-
-
-    
+console.log("Merged Output",enrichedOrder);
 
     return NextResponse.json({
       success: true,
       order,
       products,
-      userDetails,
-      companyDetails,
+   //   userDetails,
+     // companyDetails,
      });
  
   } catch (error) {

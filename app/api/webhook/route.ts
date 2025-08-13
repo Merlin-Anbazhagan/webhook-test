@@ -37,6 +37,10 @@ type ExtraField = {
   fieldName: string;
   fieldValue: string;
 };
+
+type Customer ={
+  company: string;
+}
  
 
 type BillingAddress ={
@@ -67,8 +71,8 @@ export async function POST(req: Request) {
     if (!orderRes.ok) throw new Error('Failed to fetch order details');
     const order: Order = await orderRes.json();
     console.log('Order Details:', order);
-    const billingAddress= order.billing_address;
-    const companyName = billingAddress.company;
+  //  const billingAddress= order.billing_address;
+    //const companyName = billingAddress.company;
  
     // Fetch Products
     const productsRes = await fetch(`https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/orders/${orderId}/products`, {
@@ -93,8 +97,9 @@ export async function POST(req: Request) {
       },
     });
   if (!customerRes.ok) throw new Error('Failed to fetch Customer Data');
-    const customResponseBody = await customerRes.json();
-    console.log('User Reponse', customResponseBody);
+    const userDetails: Customer = await customerRes.json();
+    const companyName = userDetails.company;
+    console.log('User Reponse', userDetails);
 
     const encodedParam =encodeURIComponent(companyName);
     const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies?q=${encodedParam}`, {

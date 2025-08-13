@@ -102,7 +102,7 @@ export async function POST(req: Request) {
     console.log('User Reponse', userDetails);
      console.log('company Name:',companyName);
 
-     
+
     const encodedParam =encodeURIComponent(companyName);
     const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies?q=${encodedParam}`, {
         headers: {
@@ -146,11 +146,9 @@ export async function POST(req: Request) {
       success: true,
       order,
       products,
-      companies
-     // customer,
-      //companyId,
-      //e8CompanyId,
-    });
+      userDetails,
+      companyDetails,
+     });
  
   } catch (error) {
     console.error('Error in webhook:', error);

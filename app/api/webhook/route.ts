@@ -20,10 +20,6 @@ type Product = {
 
 };
  
-type Coupon = {
-  code: string;
-  discount: number;
-};
  
 type Fee = {
   name: string;
@@ -33,18 +29,26 @@ type Fee = {
 type Order = {
   id: number;
   products: Product[];
-  coupons?: Coupon[];
   fees?: Fee[];
   customer_id: number;
   billing_address: BillingAddress;
+  shipping_address: ShippingAddress;
+  E8_companyId: string;
+  companyId:number;
+  companyName: string,
+  companyEmail: string,
 };
  
 type Company = {
   companyId: number;
-  companyName?: string | null;
+  companyName: string
   extraFields: ExtraField[];
   companyEmail: string;
 };
+
+type ShippingAddress ={
+
+}
  
 type ExtraField = {
   fieldName: string;
@@ -118,7 +122,64 @@ const productDetails = products.map(product => ({
   total_inc_tax: product.total_inc_tax
   }));
 
+  // To Fetch customer Data
+    const customerRes = await fetch(`https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/customers/${order.customer_id}`, {
+      headers: {
+        'X-Auth-Token': process.env.BC_API_TOKEN as string,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    });
+  if (!customerRes.ok) throw new Error('Failed to fetch Customer Data');
+    const userDetails: Customer = await customerRes.json();
+    const companyName = userDetails.company;
+    console.log('User Reponse', userDetails);
+     console.log('company Name:',companyName);
+
+
+    const encodedParam =encodeURIComponent(companyName);
+    const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies?q=${encodedParam}`, {
+        headers: {
+          'authToken': process.env.BC_B2B_AUTH_TOKEN as string,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+    if (!companyRes.ok) throw new Error('Failed to fetch Customer Data');
+    const responseBody = await companyRes.json();
+    const companies :Company[] = responseBody.data;
+   // const companies: Company = await companyRes.json();
+    console.log('Customer:', companies);
+    console.log('encoded param',encodedParam);
+
+    const companyNum = companies[0].companyId;
+
+    console.log('Company Number',companyNum);
+
+    const comPanyDeatilsRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies/${companyNum}`, {
+        headers: {
+          'authToken': process.env.BC_B2B_AUTH_TOKEN as string,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+    if (!comPanyDeatilsRes.ok) throw new Error('Failed to fetch Company Data');
+    const companyReponseDeatils = await comPanyDeatilsRes.json();
+    const companyDetails: Company =companyReponseDeatils.data;
+
+    console.log('ENtire Company Details',companyDetails);
+
+    const metaFields = companyDetails.extraFields;
+    const e8field =metaFields[0].fieldName;
+    const e8FieldValue =metaFields[0].fieldValue;
   
+
+    order.E8_companyId =e8FieldValue;
+    order.companyEmail=companyDetails.companyEmail;
+    order.companyName =companyDetails.companyName;
+    
+
+
 const enrichedOrder = {
     ...order,
     products: productDetails,

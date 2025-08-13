@@ -24,6 +24,7 @@ type Order = {
   fees?: Fee[];
   customer_id: number;
   billing_address: BillingAddress;
+  E8_companyId: number;
 };
  
 type Company = {
@@ -136,10 +137,7 @@ export async function POST(req: Request) {
     console.log('Entire Company Details',companyDetails);
 
 
-      const combinedData ={
-          orderResponseData : order,
-          productResponseData : products
-      };
+     order.E8_companyId =1111;
 
 
 
@@ -150,7 +148,7 @@ export async function POST(req: Request) {
     console.log('E8 Field',e8FieldValue);
 
     
-    console.log('Test changes',combinedData);
+    console.log('Test changes',order);
 
 
 

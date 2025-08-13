@@ -32,7 +32,7 @@ type Order = {
   fees?: Fee[];
   customer_id: number;
   billing_address: BillingAddress;
-  shipping_address: ShippingAddress;
+ // shipping_address: ShippingAddress;
   E8_companyId: string;
   companyId:number;
   companyName: string,
@@ -46,9 +46,7 @@ type Company = {
   companyEmail: string;
 };
 
-type ShippingAddress ={
 
-}
  
 type ExtraField = {
   fieldName: string;

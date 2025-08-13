@@ -2,15 +2,26 @@
 import { NextResponse } from 'next/server';
  
 type Product = {
+  id: number;
   name: string;
   sku: string;
   quantity: number;
+  order_id: number;
+  product_id: number;
+  variant_id: number;
+  name_customer: string;
+  name_merchant: string;
+  is_refunded: boolean;
+  quantity_refunded: number;
+  refund_amount:DoubleRange;
+  return_id : number;
+  wrapping_id: number;
+  wrapping_name: string,
+  base_wrapping_cost: DoubleRange;
+  is_bundled_product: boolean;
+  quantity_shipped: number;
 };
  
-type Coupon = {
-  code: string;
-  discount: number;
-};
  
 type Fee = {
   name: string;
@@ -20,11 +31,13 @@ type Fee = {
 type Order = {
   id: number;
   products: Product[];
-  coupons?: Coupon[];
   fees?: Fee[];
   customer_id: number;
   billing_address: BillingAddress;
   E8_companyId: number;
+  companyId: number,
+  companyName: string,
+
 };
  
 type Company = {
@@ -138,6 +151,13 @@ export async function POST(req: Request) {
 
 
      order.E8_companyId =1111;
+     for (let index = 0; index < products.length; index++) {
+      order.products[index].id = products[index].id;
+      order.products[index].order_id = products[index].order_id;
+      order.products[index].product_id = products[index].product_id;
+      order.products[index].variant_id = products[index].variant_id;
+      order.products[index].sku = products[index].sku;
+    }
 
 
 

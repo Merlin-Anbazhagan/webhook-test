@@ -139,7 +139,7 @@ export async function POST(req: Request) {
     const e8field =metaFields[0].fieldName;
     const e8FieldValue =metaFields[0].fieldValue;
     console.log('E8 Field',e8FieldValue);
-
+    console.log('Test changes');
     
 
     return NextResponse.json({

@@ -3,8 +3,21 @@ import { NextResponse } from 'next/server';
  
 type Product = {
   name: string;
+  name_customer: string;
+  name_merchant: string;
+  product_id: number;
+  variant_id:number;  
   sku: string;
   quantity: number;
+  is_refunded: boolean;
+  quantity_refunded: number;
+  refund_amount: DoubleRange;
+  return_id:number;
+  base_price: string;
+  base_total: string;
+  total_ex_tax:  string;
+  total_inc_tax: string;
+
 };
  
 type Coupon = {
@@ -88,11 +101,21 @@ export async function POST(req: Request) {
     
 const productDetails = products.map(product => ({
    // product_id: product.product_id,
-    name: product.name,
-    sku: product.sku,
-    quantity: product.quantity
-   // price_ex_tax: product.price_ex_tax,
-  //  total_ex_tax: product.total_ex_tax,
+  name: product.name,
+  name_customer: product.name_customer,
+  name_merchant: product.name_merchant,
+  product_id: product.product_id,
+  variant_id:product.variant_id,  
+  sku: product.sku,
+  quantity: product.quantity,
+  is_refunded: product.is_refunded,
+  quantity_refunded: product.quantity_refunded,
+  refund_amount: product.refund_amount,
+  return_id:product.return_id,
+  base_price: product.base_price,
+  base_total: product.base_total,
+  total_ex_tax:  product.total_ex_tax,
+  total_inc_tax: product.total_inc_tax
   }));
 
   
@@ -105,7 +128,8 @@ console.log("Merged Output",enrichedOrder);
 
     return NextResponse.json({
       success: true,
-      order,
+      enrichedOrder,
+    //  order,
       products,
    //   userDetails,
      // companyDetails,

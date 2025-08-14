@@ -120,6 +120,8 @@ const productDetails = products.map(product => ({
   total_inc_tax: product.total_inc_tax
   }));
 
+  
+
   // To Fetch customer Data
     const customerRes = await fetch(`https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/customers/${order.customer_id}`, {
       headers: {
@@ -165,31 +167,37 @@ const productDetails = products.map(product => ({
     const companyReponseDeatils = await comPanyDeatilsRes.json();
     const companyDetails: Company =companyReponseDeatils.data;
 
-    console.log('ENtire Company Details',companyDetails);
+
+
+    console.log('Entire Company Details',companyDetails);
 
     const metaFields = companyDetails.extraFields;
     const e8field =metaFields[0].fieldName;
     const e8FieldValue =metaFields[0].fieldValue;
+
+    
+const customerDetails = {
+  companyName: companyDetails.companyName,
+  companyEmail: companyDetails.companyEmail,
+  e8CompanyId: e8FieldValue,
+};
+
   
 
-    order.E8_companyId =e8FieldValue;
-    order.companyEmail=companyDetails.companyEmail;
-    order.companyName =companyDetails.companyName;
-    
 
-
-const enrichedOrder = {
+const OrderDetails = {
     ...order,
+    customerDetails,
     products: productDetails,
   };
 
-console.log("Merged Output",enrichedOrder);
+console.log("Merged Output",OrderDetails);
 
     return NextResponse.json({
       success: true,
-      enrichedOrder,
+      OrderDetails,
     //  order,
-      products,
+    //  products,
    //   userDetails,
      // companyDetails,
      });

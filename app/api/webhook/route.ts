@@ -174,7 +174,7 @@ const customerDetails = {
  };
 
 const OrderDetails = {
-    ...Updatedorder,
+    ...updatedOrderDetails,
     customerDetails,
     products: productDetails,
   };

@@ -137,6 +137,24 @@ const productDetails = products.map(product => ({
      console.log('company Name:',companyName);
 
 
+// To Get the Buyer Roles :::: 
+ 
+    const getUserRoles = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/users/customer/${order.customer_id}`, {
+        headers: {
+          'authToken': process.env.BC_B2B_AUTH_TOKEN as string,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+    if (!getUserRoles.ok) throw new Error('Failed to fetch User Data');
+    const userResponseBody = await getUserRoles.json();
+  ///  const companies :Company[] = responseBody.data;
+   // const companies: Company = await companyRes.json();
+    console.log('UserResponse:', userResponseBody);
+
+
+
+//To Get the Company Name:::::
     const encodedParam =encodeURIComponent(companyName);
     const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies?q=${encodedParam}`, {
         headers: {
@@ -166,6 +184,8 @@ const productDetails = products.map(product => ({
     if (!comPanyDeatilsRes.ok) throw new Error('Failed to fetch Company Data');
     const companyReponseDeatils = await comPanyDeatilsRes.json();
     const companyDetails: Company =companyReponseDeatils.data;
+
+
 
 
 

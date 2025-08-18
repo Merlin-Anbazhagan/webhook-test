@@ -182,8 +182,15 @@ if(userCompany.companyRoleId ===22405){
 const companyDetails = await fetchCompanyDetailsByName(companyName);
 console.log('Company Details:', companyDetails);
 
+let e8field;
+let e8fieldName ;
 const metafields = extractMetafields(companyDetails);
 metafields.forEach(({ name, value }) => {
+
+  if(name=='E8 Company'){
+     e8field = value;
+     e8fieldName = name;
+  }
   console.log(`Metafield: ${name} = ${value}`);
 });
 
@@ -197,11 +204,10 @@ metafields.forEach(({ name, value }) => {
 //     const e8FieldValue =metaFields[0].fieldValue;
 
     
-// const customerDetails = {
-//   companyName: companyDetails.companyName,
-//  // companyEmail: companyDetails.,
-//   e8CompanyId: e8FieldValue,
-// };
+const customerDetails = {
+   companyName: companyDetails.companyName,
+   e8CompanyId: e8field,
+ };
 
   
 

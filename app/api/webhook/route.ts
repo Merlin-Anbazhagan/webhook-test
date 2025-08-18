@@ -1,5 +1,14 @@
 /* eslint-disable no-console */
 import { NextResponse } from 'next/server';
+
+import {
+  fetchOrder,
+  fetchOrderProducts,
+  fetchCustomer,
+  fetchCustomerRole,
+  updateOrderStatus,
+} from '../../../lib/bigcommerce/api';
+
  
 type Product = {
   name: string;
@@ -78,28 +87,15 @@ export async function POST(req: Request) {
     }
  
     // Fetch Order Details
-    const orderRes = await fetch(`https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/orders/${orderId}`, {
-      headers: {
-        'X-Auth-Token': process.env.BC_API_TOKEN as string,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    });
-    if (!orderRes.ok) throw new Error('Failed to fetch order details');
-    const order: Order = await orderRes.json();
+    const fetchedOrder = await fetchOrder(orderId);
+    const order: Order = fetchedOrder;
     console.log('Order Details:', order);
   
     // Fetch Products
-    const productsRes = await fetch(`https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/orders/${orderId}/products`, {
-      headers: {
-        'X-Auth-Token': process.env.BC_API_TOKEN as string,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    });
-    if (!productsRes.ok) throw new Error('Failed to fetch order products');
-    const products: Product[] = await productsRes.json();
-    console.log('Products:', products);
+
+    const fetchedProducts = await fetchOrderProducts(orderId);
+    const products: Product[] = await fetchedProducts.json();
+    console.log('Products:', products);  
   
    
     

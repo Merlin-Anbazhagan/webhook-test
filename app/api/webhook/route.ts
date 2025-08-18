@@ -164,13 +164,17 @@ metafields.forEach(({ name, value }) => {
 
 console.log('Entire Company Details',companyDetails);
     
+const updatedOrderDetails = await fetchOrder(orderId);
+const Updatedorder: Order = fetchedOrder;
+console.log('Order Details:', updatedOrderDetails);
+
 const customerDetails = {
    companyName: companyDetails.companyName,
    e8CompanyId: e8field,
  };
 
 const OrderDetails = {
-    ...order,
+    ...Updatedorder,
     customerDetails,
     products: productDetails,
   };

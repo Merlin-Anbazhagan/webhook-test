@@ -214,7 +214,7 @@ const customerDetails = {
 
 const OrderDetails = {
     ...order,
-    //customerDetails,
+    customerDetails,
     products: productDetails,
   };
 

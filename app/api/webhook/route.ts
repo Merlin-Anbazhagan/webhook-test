@@ -168,7 +168,7 @@ const updateRes = await fetch(`https://api.bigcommerce.com/stores/${process.env.
         Accept: 'application/json',
       },
       body: JSON.stringify({
-        status_id: 2, // or your custom status ID
+        status_id: 1, // or your custom status ID
         customer_message: 'Order submitted by Junior Buyer, awaiting Senior Buyer approval.',
       }),
     });

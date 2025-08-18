@@ -166,7 +166,7 @@ console.log('Entire Company Details',companyDetails);
     
 const updatedOrderDetails = await fetchOrder(orderId);
 const Updatedorder: Order = fetchedOrder;
-console.log('Updated Order Details:', updatedOrderDetails);
+console.log('Updated Order Details:', Updatedorder);
 
 const customerDetails = {
    companyName: companyDetails.companyName,
@@ -174,7 +174,7 @@ const customerDetails = {
  };
 
 const OrderDetails = {
-    ...updatedOrderDetails,
+    ...Updatedorder,
     customerDetails,
     products: productDetails,
   };

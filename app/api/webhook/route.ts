@@ -89,13 +89,13 @@ export async function POST(req: Request) {
     // Fetch Order Details
     const fetchedOrder = await fetchOrder(orderId);
     const order: Order = fetchedOrder;
-    console.log('Order Details:', order);
+    console.log('Order Details:', fetchedOrder);
   
     // Fetch Products
 
     const fetchedProducts = await fetchOrderProducts(orderId);
-    const products: Product[] = await fetchedProducts.json();
-    console.log('Products:', products);  
+    const products: Product[] = fetchedProducts;
+    console.log('Products:', fetchedProducts);  
   
    
     
@@ -118,38 +118,19 @@ const productDetails = products.map(product => ({
   total_inc_tax: product.total_inc_tax
   }));
 
-  
+   // To Fetch customer Data
 
-  // To Fetch customer Data
-    const customerRes = await fetch(`https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/customers/${order.customer_id}`, {
-      headers: {
-        'X-Auth-Token': process.env.BC_API_TOKEN as string,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    });
-  if (!customerRes.ok) throw new Error('Failed to fetch Customer Data');
-    const userDetails: Customer = await customerRes.json();
-    const companyName = userDetails.company;
-    console.log('User Reponse', userDetails);
-     console.log('company Name:',companyName);
+  const fetchedCustomer = await fetchCustomer(order.customer_id);
+  const userDetails: Customer = fetchedCustomer;
+  const companyName = userDetails.company;
+  console.log('User Reponse', fetchedCustomer);
+  console.log('company Name:',companyName);
 
+  // To Get the Buyer Roles :::: 
 
-// To Get the Buyer Roles :::: 
- 
-    const getUserRoles = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/users/customer/${order.customer_id}`, {
-        headers: {
-          'authToken': process.env.BC_B2B_AUTH_TOKEN as string,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      });
-    if (!getUserRoles.ok) throw new Error('Failed to fetch User Data');
-    const userResponseBody = await getUserRoles.json();
-  const userCompany : Customer = userResponseBody.data;
-   // const companies: Company = await companyRes.json();
-   
-    console.log('UserResponse:', userResponseBody);
+  const fetchedBuyerRoles = await fetchCustomerRole(order.customer_id);
+  const userCompany : Customer = fetchedBuyerRoles.data;
+  console.log('UserResponse:', fetchedBuyerRoles);
 
 
 // Update the Order status if its Junior Buyer

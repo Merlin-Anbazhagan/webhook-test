@@ -55,6 +55,8 @@ type ExtraField = {
 
 type Customer ={
   company: string;
+  companyRoleId: number;
+  companyRoleName: string;
 }
  
 
@@ -148,10 +150,34 @@ const productDetails = products.map(product => ({
       });
     if (!getUserRoles.ok) throw new Error('Failed to fetch User Data');
     const userResponseBody = await getUserRoles.json();
-  ///  const companies :Company[] = responseBody.data;
+  const userCompany : Customer = userResponseBody.data;
    // const companies: Company = await companyRes.json();
+   
     console.log('UserResponse:', userResponseBody);
 
+
+// Update the Order status if its Junior Buyer
+
+if(userCompany.companyRoleId ===22405){
+  console.log("In Update Order Method")
+const updateRes = await fetch(`https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/orders/${orderId}`, {
+      method: 'PUT',
+      headers: {
+        'X-Auth-Token': process.env.BC_API_TOKEN as string,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        status_id: 2, // or your custom status ID
+        customer_message: 'Order submitted by Junior Buyer, awaiting Senior Buyer approval.',
+      }),
+    });
+
+    const updateData = await updateRes.json();
+
+    console.log("Order Status Update",updateData);
+
+}
 
 
 //To Get the Company Name:::::

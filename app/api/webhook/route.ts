@@ -7,6 +7,8 @@ import {
   fetchCustomer,
   fetchCustomerRole,
   updateOrderStatus,
+  fetchCompanyDetailsByName, 
+  extractMetafields,
 } from '../../../lib/bigcommerce/api';
 
  
@@ -138,80 +140,75 @@ const productDetails = products.map(product => ({
 
 if(userCompany.companyRoleId ===22405){
   console.log("In Update Order Method")
-const updateRes = await fetch(`https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/orders/${orderId}`, {
-      method: 'PUT',
-      headers: {
-        'X-Auth-Token': process.env.BC_API_TOKEN as string,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({
-        status_id: 1, // or your custom status ID
-        customer_message: 'Order submitted by Junior Buyer, awaiting Senior Buyer approval.',
-      }),
-    });
-
-    const updateData = await updateRes.json();
-
-    console.log("Order Status Update",updateData);
-
+  const status =1;
+  const customer_message="Order submitted by Junior Buyer, awaiting Senior Buyer approval."
+  const orderStatusUpdate = await updateOrderStatus(orderId,status,customer_message);
+  console.log("Order Status Update",orderStatusUpdate);
 }
 
 
-//To Get the Company Name:::::
-    const encodedParam =encodeURIComponent(companyName);
-    const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies?q=${encodedParam}`, {
-        headers: {
-          'authToken': process.env.BC_B2B_AUTH_TOKEN as string,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      });
-    if (!companyRes.ok) throw new Error('Failed to fetch Customer Data');
-    const responseBody = await companyRes.json();
-    const companies :Company[] = responseBody.data;
-   // const companies: Company = await companyRes.json();
-    console.log('Customer:', companies);
-    console.log('encoded param',encodedParam);
+// //To Get the Company Name:::::
+//     const encodedParam =encodeURIComponent(companyName);
+//     const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies?q=${encodedParam}`, {
+//         headers: {
+//           'authToken': process.env.BC_B2B_AUTH_TOKEN as string,
+//           'Content-Type': 'application/json',
+//           Accept: 'application/json',
+//         },
+//       });
+//     if (!companyRes.ok) throw new Error('Failed to fetch Customer Data');
+//     const responseBody = await companyRes.json();
+//     const companies :Company[] = responseBody.data;
+//    // const companies: Company = await companyRes.json();
+//     console.log('Customer:', companies);
+//     console.log('encoded param',encodedParam);
 
-    const companyNum = companies[0].companyId;
+//     const companyNum = companies[0].companyId;
 
-    console.log('Company Number',companyNum);
+//     console.log('Company Number',companyNum);
 
-    const comPanyDeatilsRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies/${companyNum}`, {
-        headers: {
-          'authToken': process.env.BC_B2B_AUTH_TOKEN as string,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      });
-    if (!comPanyDeatilsRes.ok) throw new Error('Failed to fetch Company Data');
-    const companyReponseDeatils = await comPanyDeatilsRes.json();
-    const companyDetails: Company =companyReponseDeatils.data;
+//     const comPanyDeatilsRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies/${companyNum}`, {
+//         headers: {
+//           'authToken': process.env.BC_B2B_AUTH_TOKEN as string,
+//           'Content-Type': 'application/json',
+//           Accept: 'application/json',
+//         },
+//       });
+//     if (!comPanyDeatilsRes.ok) throw new Error('Failed to fetch Company Data');
+//     const companyReponseDeatils = await comPanyDeatilsRes.json();
+//     const companyDetails: Company =companyReponseDeatils.data;
 
+
+const companyDetails = await fetchCompanyDetailsByName(companyName);
+console.log('Company Details:', companyDetails);
+
+const metafields = extractMetafields(companyDetails);
+metafields.forEach(({ name, value }) => {
+  console.log(`Metafield: ${name} = ${value}`);
+});
 
 
 
 
     console.log('Entire Company Details',companyDetails);
 
-    const metaFields = companyDetails.extraFields;
-    const e8field =metaFields[0].fieldName;
-    const e8FieldValue =metaFields[0].fieldValue;
+//     const metaFields = companyDetails.extraFields;
+//     const e8field =metaFields[0].fieldName;
+//     const e8FieldValue =metaFields[0].fieldValue;
 
     
-const customerDetails = {
-  companyName: companyDetails.companyName,
-  companyEmail: companyDetails.companyEmail,
-  e8CompanyId: e8FieldValue,
-};
+// const customerDetails = {
+//   companyName: companyDetails.companyName,
+//  // companyEmail: companyDetails.,
+//   e8CompanyId: e8FieldValue,
+// };
 
   
 
 
 const OrderDetails = {
     ...order,
-    customerDetails,
+    //customerDetails,
     products: productDetails,
   };
 

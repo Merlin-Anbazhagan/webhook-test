@@ -1,3 +1,14 @@
+
+type Company = {
+  companyId: number;
+  companyName: string;
+  extraFields: {
+    fieldName: string;
+    fieldValue: string;
+  }[];
+};
+
+
 export async function fetchOrder(orderId: number) {
   const res = await fetch(
     `https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/orders/${orderId}`,
@@ -42,6 +53,7 @@ export async function fetchCustomerRole(customerId: number) {
 }
 
 export async function updateOrderStatus(orderId: number, statusId: number, message: string) {
+    console.log("IN ORDER STATUS UPDATE ")
   const res = await fetch(
     `https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/orders/${orderId}`,
     {
@@ -53,6 +65,45 @@ export async function updateOrderStatus(orderId: number, statusId: number, messa
   if (!res.ok) throw new Error('Failed to update order status');
   return res.json();
 }
+
+
+
+export async function fetchCompanyDetailsByName(companyName: string): Promise<Company> {
+  const encodedName = encodeURIComponent(companyName);
+
+  // Step 1: Search for company by name
+  const searchRes = await fetch(
+    `https://api-b2b.bigcommerce.com/api/v3/io/companies?q=${encodedName}`,
+    { headers: getBCAPIHeaders() }
+  );
+  if (!searchRes.ok) throw new Error('Failed to fetch company list');
+
+  const searchData = await searchRes.json();
+  const companies: Company[] = searchData.data;
+
+  if (!companies.length) throw new Error(`No company found for name: ${companyName}`);
+  const companyId = companies[0].companyId;
+
+  // Step 2: Fetch full company details
+  const detailsRes = await fetch(
+    `https://api-b2b.bigcommerce.com/api/v3/io/companies/${companyId}`,
+    { headers: getBCAPIHeaders() }
+  );
+  if (!detailsRes.ok) throw new Error('Failed to fetch company details');
+
+  const detailsData = await detailsRes.json();
+  return detailsData.data;
+}
+
+
+export function extractMetafields(company: Company) {
+  return company.extraFields.map((field) => ({
+    name: field.fieldName,
+    value: field.fieldValue,
+  }));
+}
+
+
 
 function getBCHeaders() {
   return {

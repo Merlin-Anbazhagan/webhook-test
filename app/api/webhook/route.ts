@@ -147,38 +147,6 @@ if(userCompany.companyRoleId ===22405){
 }
 
 
-// //To Get the Company Name:::::
-//     const encodedParam =encodeURIComponent(companyName);
-//     const companyRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies?q=${encodedParam}`, {
-//         headers: {
-//           'authToken': process.env.BC_B2B_AUTH_TOKEN as string,
-//           'Content-Type': 'application/json',
-//           Accept: 'application/json',
-//         },
-//       });
-//     if (!companyRes.ok) throw new Error('Failed to fetch Customer Data');
-//     const responseBody = await companyRes.json();
-//     const companies :Company[] = responseBody.data;
-//    // const companies: Company = await companyRes.json();
-//     console.log('Customer:', companies);
-//     console.log('encoded param',encodedParam);
-
-//     const companyNum = companies[0].companyId;
-
-//     console.log('Company Number',companyNum);
-
-//     const comPanyDeatilsRes = await fetch(`https://api-b2b.bigcommerce.com/api/v3/io/companies/${companyNum}`, {
-//         headers: {
-//           'authToken': process.env.BC_B2B_AUTH_TOKEN as string,
-//           'Content-Type': 'application/json',
-//           Accept: 'application/json',
-//         },
-//       });
-//     if (!comPanyDeatilsRes.ok) throw new Error('Failed to fetch Company Data');
-//     const companyReponseDeatils = await comPanyDeatilsRes.json();
-//     const companyDetails: Company =companyReponseDeatils.data;
-
-
 const companyDetails = await fetchCompanyDetailsByName(companyName);
 console.log('Company Details:', companyDetails);
 
@@ -194,23 +162,12 @@ metafields.forEach(({ name, value }) => {
   console.log(`Metafield: ${name} = ${value}`);
 });
 
-
-
-
-    console.log('Entire Company Details',companyDetails);
-
-//     const metaFields = companyDetails.extraFields;
-//     const e8field =metaFields[0].fieldName;
-//     const e8FieldValue =metaFields[0].fieldValue;
-
+console.log('Entire Company Details',companyDetails);
     
 const customerDetails = {
    companyName: companyDetails.companyName,
    e8CompanyId: e8field,
  };
-
-  
-
 
 const OrderDetails = {
     ...order,

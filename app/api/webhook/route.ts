@@ -129,14 +129,14 @@ const productDetails = products.map(product => ({
   // To Get the Buyer Roles :::: 
 
   const fetchedBuyerRoles = await fetchCustomerRole(order.customer_id);
-  const userCompany : Customer = fetchedBuyerRoles.data;
+  const userCompany : Customer = fetchedBuyerRoles;
   console.log('UserResponse:', fetchedBuyerRoles);
   console.log('RoleID',userCompany.company, userCompany.companyRoleId );
 
 
 // Update the Order status if its Junior Buyer
 
-if(fetchedBuyerRoles.companyRoleId ===22405){
+if(userCompany.companyRoleId ===22405){
   console.log("In Update Order Method")
 const updateRes = await fetch(`https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/orders/${orderId}`, {
       method: 'PUT',

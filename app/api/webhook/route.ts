@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import { NextResponse } from 'next/server';
+import { Product } from '@/type/product';
 
 import {
   fetchOrder,
@@ -9,27 +10,28 @@ import {
   updateOrderStatus,
   fetchCompanyDetailsByName, 
   extractMetafields,
+  updateInventoryDetails,
 } from '../../../lib/bigcommerce/api';
 
  
-type Product = {
-  name: string;
-  name_customer: string;
-  name_merchant: string;
-  product_id: number;
-  variant_id:number;  
-  sku: string;
-  quantity: number;
-  is_refunded: boolean;
-  quantity_refunded: number;
-  refund_amount: DoubleRange;
-  return_id:number;
-  base_price: string;
-  base_total: string;
-  total_ex_tax:  string;
-  total_inc_tax: string;
+// type Product = {
+//   name: string;
+//   name_customer: string;
+//   name_merchant: string;
+//   product_id: number;
+//   variant_id:number;  
+//   sku: string;
+//   quantity: number;
+//   is_refunded: boolean;
+//   quantity_refunded: number;
+//   refund_amount: DoubleRange;
+//   return_id:number;
+//   base_price: string;
+//   base_total: string;
+//   total_ex_tax:  string;
+//   total_inc_tax: string;
 
-};
+// };
  
  
 type Fee = {
@@ -138,13 +140,13 @@ const productDetails = products.map(product => ({
 
 // Update the Order status if its Junior Buyer
 
-// if(userCompany.companyRoleId ===22405){
-//   console.log("In Update Order Method")
-//   const status =1;
-//   const customer_message="Order submitted by Junior Buyer, awaiting Senior Buyer approval."
-//   const orderStatusUpdate = await updateOrderStatus(orderId,status,customer_message);
-//   console.log("Order Status Update",orderStatusUpdate);
-// }
+if(userCompany.companyRoleId ===22405){
+  console.log("In Update Order Method")
+  const status =1;
+  const customer_message="Order submitted by Junior Buyer, awaiting Senior Buyer approval."
+  const orderStatusUpdate = await updateOrderStatus(orderId,status,customer_message);
+  console.log("Order Status Update",orderStatusUpdate);
+}
 
 
 const companyDetails = await fetchCompanyDetailsByName(companyName);
@@ -152,12 +154,17 @@ console.log('Company Details:', companyDetails);
 
 let e8field;
 let e8fieldName ;
+let warehouseId :string;
 const metafields = extractMetafields(companyDetails);
 metafields.forEach(({ name, value }) => {
 
-  if(name=='E8 Company'){
+  if(name=='E8 COMPANY ID'){
      e8field = value;
      e8fieldName = name;
+  }
+
+  if(name =='Warehouse'){
+    warehouseId=value;
   }
   console.log(`Metafield: ${name} = ${value}`);
 });
@@ -167,6 +174,11 @@ console.log('Entire Company Details',companyDetails);
 const updatedOrderDetails = await fetchOrder(orderId);
 const Updatedorder: Order = updatedOrderDetails;
 console.log('Updated Order Details:', Updatedorder);
+
+
+// To update Inventory 
+//const inventoryResponse = await updateInventoryDetails(products, warehouseId);
+
 
 const customerDetails = {
    companyName: companyDetails.companyName,

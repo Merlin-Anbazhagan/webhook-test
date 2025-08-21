@@ -1,3 +1,5 @@
+import { headers } from "next/headers";
+import { Product } from "@/type/product";
 
 type Company = {
   companyId: number;
@@ -102,6 +104,33 @@ export function extractMetafields(company: Company) {
     value: field.fieldValue,
   }));
 }
+
+// To update inventory data
+export async function updateInventoryDetails(products: Product[], warehouseId:string) {
+  
+  const productList=products.map(product=>({
+    location_id:warehouseId,
+    variant_id:product.variant_id,
+    quantity: -product.quantity
+  }));
+
+  const payload = {
+    reason: "Inventory Relative Adjustment Operation",
+    productList
+  };
+
+  const inventoryResponse = await fetch(
+    `https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v3/inventory/adjustments/relative`,
+    { 
+      method: 'POST',
+      headers: getBCHeaders(),
+      body: JSON.stringify({ payload }),    
+    }
+  );
+if (!inventoryResponse.ok) throw new Error('Failed to update Inventory Status');
+  return inventoryResponse.json();
+}
+
 
 
 

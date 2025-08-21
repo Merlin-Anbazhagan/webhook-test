@@ -127,7 +127,7 @@ export async function updateInventoryDetails(products: Product[], warehouseId: n
     { 
       method: 'POST',
       headers: getBCHeaders(),
-      body: JSON.stringify({ payload }),    
+      body: JSON.stringify(payload),    
     }
   );
 if (!inventoryResponse.ok) throw new Error('Failed to update Inventory Status');

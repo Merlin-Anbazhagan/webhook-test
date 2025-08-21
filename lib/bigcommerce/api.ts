@@ -108,7 +108,7 @@ export function extractMetafields(company: Company) {
 // To update inventory data
 export async function updateInventoryDetails(products: Product[], warehouseId: string) {
   
-  const productList=products.map(product=>({
+  const items=products.map(product=>({
     location_id:warehouseId,
     variant_id:product.variant_id,
     quantity: -product.quantity
@@ -116,7 +116,7 @@ export async function updateInventoryDetails(products: Product[], warehouseId: s
 
   const payload = {
     reason: "Inventory Relative Adjustment Operation",
-    productList
+    items
   };
 
   console.log("Inventory Update Payload",payload)

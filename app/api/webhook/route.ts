@@ -14,26 +14,6 @@ import {
 } from '../../../lib/bigcommerce/api';
 
  
-// type Product = {
-//   name: string;
-//   name_customer: string;
-//   name_merchant: string;
-//   product_id: number;
-//   variant_id:number;  
-//   sku: string;
-//   quantity: number;
-//   is_refunded: boolean;
-//   quantity_refunded: number;
-//   refund_amount: DoubleRange;
-//   return_id:number;
-//   base_price: string;
-//   base_total: string;
-//   total_ex_tax:  string;
-//   total_inc_tax: string;
-
-// };
- 
- 
 type Fee = {
   name: string;
   amount: number;
@@ -154,7 +134,7 @@ console.log('Company Details:', companyDetails);
 
 let e8field;
 let e8fieldName ;
-let warehouseId :string;
+let warehouseId ;
 const metafields = extractMetafields(companyDetails);
 metafields.forEach(({ name, value }) => {
 
@@ -183,6 +163,7 @@ console.log('Updated Order Details:', Updatedorder);
 const customerDetails = {
    companyName: companyDetails.companyName,
    e8CompanyId: e8field,
+   wareHouseId: warehouseId,
  };
 
 const OrderDetails = {

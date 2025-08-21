@@ -119,6 +119,9 @@ export async function updateInventoryDetails(products: Product[], warehouseId: s
     productList
   };
 
+  console.log("Inventory Update Payload",payload)
+  console.log("Json", JSON.stringify({ payload }))
+
   const inventoryResponse = await fetch(
     `https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v3/inventory/adjustments/relative`,
     { 

@@ -106,7 +106,7 @@ export function extractMetafields(company: Company) {
 }
 
 // To update inventory data
-export async function updateInventoryDetails(products: Product[], warehouseId:string) {
+export async function updateInventoryDetails(products: Product[], warehouseId: string) {
   
   const productList=products.map(product=>({
     location_id:warehouseId,

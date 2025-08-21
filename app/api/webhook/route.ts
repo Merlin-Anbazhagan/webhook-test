@@ -155,16 +155,18 @@ const updatedOrderDetails = await fetchOrder(orderId);
 const Updatedorder: Order = updatedOrderDetails;
 console.log('Updated Order Details:', Updatedorder);
 
-
-// To update Inventory 
-//const inventoryResponse = await updateInventoryDetails(products, warehouseId);
-
-
 const customerDetails = {
    companyName: companyDetails.companyName,
    e8CompanyId: e8field,
-   wareHouseId: warehouseId,
+   warehouseId: warehouseId ?? "",
  };
+
+// To update Inventory 
+const inventoryResponse = await updateInventoryDetails(products, customerDetails.warehouseId);
+
+console.log("Updated inventory response")
+
+
 
 const OrderDetails = {
     ...Updatedorder,

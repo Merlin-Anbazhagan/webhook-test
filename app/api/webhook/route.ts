@@ -156,6 +156,8 @@ const updatedOrderDetails = await fetchOrder(orderId);
 const Updatedorder: Order = updatedOrderDetails;
 console.log('Updated Order Details:', Updatedorder);
 
+console.log('warehouseId:',warehouseId);
+
 const customerDetails = {
    companyName: companyDetails.companyName,
    e8CompanyId: e8field,

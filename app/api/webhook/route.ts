@@ -110,23 +110,23 @@ const productDetails = products.map(product => ({
   console.log('User Reponse', fetchedCustomer);
   console.log('company Name:',companyName);
 
-  // To Get the Buyer Roles :::: 
+//   // To Get the Buyer Roles :::: 
 
-  const fetchedBuyerRoles = await fetchCustomerRole(order.customer_id);
-  const userCompany : Customer = fetchedBuyerRoles;
-  console.log('UserResponse:', fetchedBuyerRoles);
-  console.log('RoleID',userCompany.company, userCompany.companyRoleId );
+//   const fetchedBuyerRoles = await fetchCustomerRole(order.customer_id);
+//   const userCompany : Customer = fetchedBuyerRoles;
+//   console.log('UserResponse:', fetchedBuyerRoles);
+//   console.log('RoleID',userCompany.company, userCompany.companyRoleId );
 
 
-// Update the Order status if its Junior Buyer
+// // Update the Order status if its Junior Buyer
 
-if(userCompany.companyRoleId ===22405){
-  console.log("In Update Order Method")
-  const status =1;
-  const customer_message="Order submitted by Junior Buyer, awaiting Senior Buyer approval."
-  const orderStatusUpdate = await updateOrderStatus(orderId,status,customer_message);
-  console.log("Order Status Update",orderStatusUpdate);
-}
+// if(userCompany.companyRoleId ===22405){
+//   console.log("In Update Order Method")
+//   const status =1;
+//   const customer_message="Order submitted by Junior Buyer, awaiting Senior Buyer approval."
+//   const orderStatusUpdate = await updateOrderStatus(orderId,status,customer_message);
+//   console.log("Order Status Update",orderStatusUpdate);
+// }
 
 
 const companyDetails = await fetchCompanyDetailsByName(companyName);

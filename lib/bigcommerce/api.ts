@@ -111,7 +111,7 @@ export async function updateInventoryDetails(products: Product[], warehouseId: n
   const items=products.map(product=>({
     location_id:warehouseId,
     sku:product.sku,
-    quantity: product.quantity
+    quantity: -product.quantity
   }));
 
   const payload = {

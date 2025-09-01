@@ -88,6 +88,26 @@ export async function POST(req: Request) {
     console.log('Shipping Address:', fetchedShippingAddress);
 
 
+const shippingDetails = shippingAddress.map(address => ({
+  first_name: address.first_name,
+  last_name: address.last_name,
+  company: address.company,
+  street_1: address.street_1,
+  street_2: address.street_2,
+  city: address.city,
+  zip: address.zip,
+  country: address.country,
+  country_iso2: address.country_iso2,
+  email: address.email,
+  state: address.state,
+  shipping_method: address.shipping_method,
+  items_total: address.items_total,
+  items_shipped: address.items_shipped,
+  shipping_zone_id: address.shipping_zone_id,
+  shipping_zone_name: address.shipping_zone_name,
+  base_cost: address.base_cost
+}));
+
 
 const productDetails = products.map(product => ({
    // product_id: product.product_id,
@@ -181,7 +201,7 @@ const OrderDetails = {
     ...Updatedorder,
     customerDetails,
     products: productDetails,
-    shipping_addresses:shippingAddress
+    shipping_addresses:shippingDetails
   };
 
 console.log("Order Export Output",OrderDetails);

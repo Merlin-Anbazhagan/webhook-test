@@ -184,11 +184,11 @@ const OrderDetails = {
     shipping_addresses:shippingAddress
   };
 
-console.log("Merged Output",OrderDetails);
+console.log("Order Export Output",OrderDetails);
 
     return NextResponse.json({
       success: true,
- //     OrderDetails,
+      OrderDetails,
     //  order,
     //  products,
    //   userDetails,

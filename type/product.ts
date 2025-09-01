@@ -16,3 +16,24 @@ export interface Product {
   total_ex_tax: number;
   total_inc_tax: number;
 }
+
+
+export interface ShippingAddress {
+  first_name: string;
+  last_name: string;
+  company: string;
+  street_1: string;
+  street_2: number;
+  city: string;
+  zip: number;
+  country: boolean;
+  country_iso2: number;
+  email:string
+  state: number;
+  shipping_method:string
+  items_total:number;
+  items_shipped: number;
+  shipping_zone_id:number
+  shipping_zone_name:string;
+  base_cost: number;
+}

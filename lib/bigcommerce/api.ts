@@ -29,6 +29,15 @@ export async function fetchOrderProducts(orderId: number) {
   return res.json();
 }
 
+export async function fetchShippingAddress(orderId: number) {
+const res = await fetch(
+    `https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/orders/${orderId}/shipping_addresses`,
+    { headers: getBCHeaders() }
+  );
+  if (!res.ok) throw new Error('Failed to fetch shipping address');
+  return res.json();
+}
+
 export async function fetchCustomer(customerId: number) {
   const res = await fetch(
     `https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v2/customers/${customerId}`,

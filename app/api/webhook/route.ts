@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { NextResponse } from 'next/server';
-import { Product } from '@/type/product';
+import { Product ,ShippingAddress} from '@/type/product';
 
 import {
   fetchOrder,
@@ -11,6 +11,7 @@ import {
   fetchCompanyDetailsByName, 
   extractMetafields,
   updateInventoryDetails,
+  fetchShippingAddress
 } from '../../../lib/bigcommerce/api';
 
  
@@ -82,7 +83,12 @@ export async function POST(req: Request) {
     console.log('Products:', fetchedProducts);  
   
    
-    
+    const fetchedShippingAddress = await fetchShippingAddress(orderId);
+    const shippingAddress: ShippingAddress[] = fetchedShippingAddress;
+    console.log('Shipping Address:', fetchedShippingAddress);
+
+
+
 const productDetails = products.map(product => ({
    // product_id: product.product_id,
   name: product.name,
@@ -175,6 +181,7 @@ const OrderDetails = {
     ...Updatedorder,
     customerDetails,
     products: productDetails,
+    shipping_addresses:shippingAddress
   };
 
 console.log("Merged Output",OrderDetails);

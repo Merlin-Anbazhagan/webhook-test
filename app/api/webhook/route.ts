@@ -205,18 +205,19 @@ console.log("Updated inventory response")
 const inventoryData = await fetchInventoryDetails(products, customerDetails.warehouseId);
 const inventoryDetails: InventoryItem[] = inventoryData.data;
 console.log('Inventory Details:', inventoryDetails);
-const productIds = inventoryDetails.map(item => item.identity.product_id);
-console.log('Product IDs for Inventory:', productIds);
-const inventoryLocations = inventoryDetails.flatMap(item => {
-  
-  const locations = item.locations.map(location => ({
+
+const inventoryLocations= inventoryDetails.flatMap(item => {
+  identity: {
+    product_id: item.identity.product_id
+  }
+  locations: item.locations.map(location => ({
     locationId: location.location_id,
     locationName: location.location_name,
     availableQuantity: location.available_to_sell,
     settings: location.settings
   }));
-  return locations;
 });
+
 
 console.log('Inventory Locations:', inventoryLocations);
 
@@ -225,7 +226,7 @@ const OrderDetails = {
     customerDetails,
     products: productDetails,
     shipping_addresses:shippingDetails,
-    inventory
+    inventoryLocations
   };
 
 console.log("Order Export Output",OrderDetails);

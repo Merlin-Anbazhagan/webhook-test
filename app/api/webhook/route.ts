@@ -181,14 +181,14 @@ metafields.forEach(({ name, value }) => {
   console.log(`Metafield: ${name} = ${value}`);
 });
 
-
-console.log('warehouseId:',warehouseId);
-
 const customerDetails = {
    companyName: companyDetails.companyName,
    e8CompanyId: e8field,
    warehouseId: parseInt(warehouseId ?? "") 
  };
+console.log('warehouseId:',warehouseId);
+
+
 
 // To update Inventory 
 const inventoryResponse = await updateInventoryDetails(products, customerDetails.warehouseId);

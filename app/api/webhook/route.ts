@@ -80,9 +80,12 @@ type InventoryLocation = {
   location_name: string;
   location_code: string;
   available_to_sell: number;
-  settings: any;
+  settings: settingDetails[];
 };
 
+type settingDetails = {
+  bin_picking_number: string;
+}
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -200,7 +203,7 @@ const inventoryLocations = inventoryDetails.flatMap(item =>
     locationId: location.location_id,
     locationName: location.location_name,
     availableQuantity: location.available_to_sell,
-    uom: location.settings?.bin_picking_number || 'Each',
+    uom: location.settings[0].bin_picking_number
   }))
 );
 

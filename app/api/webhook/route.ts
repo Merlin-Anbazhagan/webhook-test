@@ -205,6 +205,8 @@ console.log("Updated inventory response")
 const inventoryData = await fetchInventoryDetails(products, customerDetails.warehouseId);
 const inventoryDetails: InventoryItem[] = inventoryData.data;
 console.log('Inventory Details:', inventoryDetails);
+const productIds = inventoryDetails.map(item => item.identity.product_id);
+console.log('Product IDs for Inventory:', productIds);
 const inventoryLocations = inventoryDetails.flatMap(item => {
   
   const locations = item.locations.map(location => ({
@@ -216,11 +218,7 @@ const inventoryLocations = inventoryDetails.flatMap(item => {
   return locations;
 });
 
-const inventory ={
-  ...inventoryDetails,
-  locations: inventoryLocations
-}
-console.log('Inventory Locations:', inventory);
+console.log('Inventory Locations:', inventoryLocations);
 
 const OrderDetails = {
     ...order,

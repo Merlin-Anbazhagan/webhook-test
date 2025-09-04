@@ -203,7 +203,7 @@ const inventoryLocations = inventoryDetails.flatMap(item =>
     locationId: location.location_id,
     locationName: location.location_name,
     availableQuantity: location.available_to_sell,
-    uom: location.settings[0].bin_picking_number
+    settings: location.settings
   }))
 );
 

@@ -204,7 +204,7 @@ const inventoryData = await fetchInventoryDetails(products, customerDetails.ware
 const inventoryDetails: InventoryItem[] = inventoryData.data;
 console.log('Inventory Details:', inventoryDetails);
 const inventoryLocations = inventoryDetails.flatMap(item => {
-  const product_id = item.identity[0].product_id;
+  const product_id = item.identity.map(id => id.product_id);
   const locations = item.locations.map(location => ({
     locationId: location.location_id,
     locationName: location.location_name,

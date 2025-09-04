@@ -165,9 +165,9 @@ const productDetails = products.map(product => ({
 //To Fetch Company Details
 const companyDetails = await fetchCompanyDetailsByName(companyName);
 
-let e8field: string | undefined;
-let e8fieldName: string | undefined;
-let warehouseId: string | undefined;
+let e8field;
+let e8fieldName ;
+let warehouseId ;
 const metafields = extractMetafields(companyDetails);
 metafields.forEach(({ name, value }) => {
 
@@ -175,21 +175,20 @@ metafields.forEach(({ name, value }) => {
      e8field = value;
      e8fieldName = name;
   }
-  if(name =='Warehouse ID'){
+  if(name =='Warehouse'){
     warehouseId = value;
   }
   console.log(`Metafield: ${name} = ${value}`);
-  console.log(`warehouseId: ${warehouseId}`);
 });
+
+
+console.log('warehouseId:',warehouseId);
 
 const customerDetails = {
    companyName: companyDetails.companyName,
    e8CompanyId: e8field,
    warehouseId: parseInt(warehouseId ?? "") 
  };
-console.log('warehouseId:',warehouseId);
-
-
 
 // To update Inventory 
 const inventoryResponse = await updateInventoryDetails(products, customerDetails.warehouseId);

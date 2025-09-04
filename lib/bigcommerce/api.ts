@@ -145,6 +145,19 @@ if (!inventoryResponse.ok) throw new Error('Failed to update Inventory Status');
 
 
 
+// To fetch the inventory details
+export async function fetchInventoryDetails(products: Product[], warehouseId: number) {
+ 
+const productIds = products
+  .map(product => product.product_id)
+  .join(',');
+    const res = await fetch(
+    `https://api.bigcommerce.com/stores/${process.env.BC_STORE_HASH}/v3/inventory/items?location_id:in=${warehouseId}&product_id:in=${productIds}`,
+    { headers: getBCHeaders() }
+  );
+  if (!res.ok) throw new Error('Failed to fetch inventory details');
+  return res.json();
+}
 
 function getBCHeaders() {
   return {

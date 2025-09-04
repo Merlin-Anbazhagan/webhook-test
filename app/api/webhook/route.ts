@@ -11,7 +11,8 @@ import {
   fetchCompanyDetailsByName, 
   extractMetafields,
   updateInventoryDetails,
-  fetchShippingAddress
+  fetchShippingAddress,
+  fetchInventoryDetails
 } from '../../../lib/bigcommerce/api';
 
  
@@ -59,7 +60,29 @@ type BillingAddress ={
     first_name:string;
 
 }
- 
+
+
+type customerCompanyDetails = {
+   companyName: string;
+   e8CompanyId: string;
+   warehouseId: number;
+   warehouseName: string;
+   warehouseCode: string;
+};
+
+type InventoryItem = {
+  product_id: number;
+  locations: InventoryLocation[];
+};
+
+type InventoryLocation = {
+  location_id: number;
+  location_name: string;
+  location_code: string;
+  available_to_sell: number;
+  settings: any;
+};
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -136,27 +159,8 @@ const productDetails = products.map(product => ({
   console.log('User Reponse', fetchedCustomer);
   console.log('company Name:',companyName);
 
-//   // To Get the Buyer Roles :::: 
-
-//   const fetchedBuyerRoles = await fetchCustomerRole(order.customer_id);
-//   const userCompany : Customer = fetchedBuyerRoles;
-//   console.log('UserResponse:', fetchedBuyerRoles);
-//   console.log('RoleID',userCompany.company, userCompany.companyRoleId );
-
-
-// // Update the Order status if its Junior Buyer
-
-// if(userCompany.companyRoleId ===22405){
-//   console.log("In Update Order Method")
-//   const status =1;
-//   const customer_message="Order submitted by Junior Buyer, awaiting Senior Buyer approval."
-//   const orderStatusUpdate = await updateOrderStatus(orderId,status,customer_message);
-//   console.log("Order Status Update",orderStatusUpdate);
-// }
-
-
+//To Fetch Company Details
 const companyDetails = await fetchCompanyDetailsByName(companyName);
-console.log('Company Details:', companyDetails);
 
 let e8field;
 let e8fieldName ;
@@ -168,26 +172,19 @@ metafields.forEach(({ name, value }) => {
      e8field = value;
      e8fieldName = name;
   }
-
-  if(name =='Warehouse'){
-    warehouseId=value;
+  if(name =='Warehouse ID'){
+    warehouseId = value;
   }
   console.log(`Metafield: ${name} = ${value}`);
 });
 
-console.log('Entire Company Details',companyDetails);
-    
-
-const updatedOrderDetails = await fetchOrder(orderId);
-const Updatedorder: Order = updatedOrderDetails;
-console.log('Updated Order Details:', Updatedorder);
 
 console.log('warehouseId:',warehouseId);
 
 const customerDetails = {
    companyName: companyDetails.companyName,
    e8CompanyId: e8field,
-   warehouseId: parseInt(warehouseId ?? ""),
+   warehouseId: parseInt(warehouseId ?? "") 
  };
 
 // To update Inventory 
@@ -196,9 +193,21 @@ const inventoryResponse = await updateInventoryDetails(products, customerDetails
 console.log("Updated inventory response")
 
 
+const inventoryData = await fetchInventoryDetails(products, customerDetails.warehouseId);
+const inventoryDetails: InventoryItem[] = inventoryData.data;
+const inventoryLocations = inventoryDetails.flatMap(item =>
+  item.locations.map(location => ({
+    locationId: location.location_id,
+    locationName: location.location_name,
+    availableQuantity: location.available_to_sell,
+    uom: location.settings?.bin_picking_number || 'Each',
+  }))
+);
+
+console.log('Inventory Locations:', inventoryLocations);
 
 const OrderDetails = {
-    ...Updatedorder,
+    ...order,
     customerDetails,
     products: productDetails,
     shipping_addresses:shippingDetails

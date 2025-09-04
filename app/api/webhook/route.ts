@@ -181,7 +181,7 @@ metafields.forEach(({ name, value }) => {
   console.log(`Metafield: ${name} = ${value}`);
 });
 
-
+console.log('Company Response:',companyDetails);
 console.log('warehouseId:',warehouseId);
 
 const customerDetails = {
@@ -198,6 +198,7 @@ console.log("Updated inventory response")
 
 const inventoryData = await fetchInventoryDetails(products, customerDetails.warehouseId);
 const inventoryDetails: InventoryItem[] = inventoryData.data;
+console.log('Inventory Details:', inventoryDetails);
 const inventoryLocations = inventoryDetails.flatMap(item => {
   const product_id = item.product_id;
   const locations = item.locations.map(location => ({
@@ -224,11 +225,7 @@ console.log("Order Export Output",OrderDetails);
     return NextResponse.json({
       success: true,
       OrderDetails,
-    //  order,
-    //  products,
-   //   userDetails,
-     // companyDetails,
-     });
+        });
  
   } catch (error) {
     console.error('Error in webhook:', error);

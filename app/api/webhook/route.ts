@@ -14,6 +14,7 @@ import {
   fetchShippingAddress,
   fetchInventoryDetails
 } from '../../../lib/bigcommerce/api';
+import { checkServerIdentity } from 'tls';
 
  
 type Fee = {
@@ -71,14 +72,12 @@ type customerCompanyDetails = {
 };
 
 
-type InventoryItem = {
-  identity: Identity[],
+type InventoryItem = {  
+identity: {
+    product_id: number;
+    sku: string;
+  };
   locations: InventoryLocation[];
-};
-
-type Identity = {
-  product_id: number;
-  variant_id: number;
 };
 
 type InventoryLocation = {
@@ -207,17 +206,16 @@ const inventoryDetails: InventoryItem[] = inventoryData.data;
 console.log('Inventory Details:', inventoryDetails);
 
 const inventoryLocations = inventoryDetails.flatMap(item => {
-  const identity = item.identity.map(id => ({
-    product_id: id.product_id,
-    variant_id: id.variant_id
-  }));
+  
+  const productId = item.identity.product_id;
+
   const locations = item.locations.map(location => ({
     locationId: location.location_id,
     locationName: location.location_name,
-    availableQuantity: location.available_to_sell,
+    availaleQuantity: location.available_to_sell,
     settings: location.settings
   }));
-  return { identity, locations };
+  return { locations };
 });
 
 

@@ -72,14 +72,14 @@ type customerCompanyDetails = {
 
 
 type InventoryItem = {
-  identity: {
-    product_id: number;
-    sku: string;
-      };
+  identity: Identity[],
   locations: InventoryLocation[];
 };
 
-
+type Identity = {
+  product_id: number;
+  variant_id: number;
+};
 
 type InventoryLocation = {
   location_id: number;
@@ -206,16 +206,18 @@ const inventoryData = await fetchInventoryDetails(products, customerDetails.ware
 const inventoryDetails: InventoryItem[] = inventoryData.data;
 console.log('Inventory Details:', inventoryDetails);
 
-const inventoryLocations= inventoryDetails.flatMap(item => {
-  identity: {
-    product_id: item.identity.product_id
-  }
-  locations: item.locations.map(location => ({
+const inventoryLocations = inventoryDetails.flatMap(item => {
+  const identity = item.identity.map(id => ({
+    product_id: id.product_id,
+    variant_id: id.variant_id
+  }));
+  const locations = item.locations.map(location => ({
     locationId: location.location_id,
     locationName: location.location_name,
     availableQuantity: location.available_to_sell,
     settings: location.settings
   }));
+  return { identity, locations };
 });
 
 

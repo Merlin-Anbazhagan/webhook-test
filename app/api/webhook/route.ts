@@ -215,7 +215,8 @@ const inventoryLocations = inventoryDetails.flatMap(item => {
     locationId: location.location_id,
     locationName: location.location_name,
     availaleQuantity: location.available_to_sell,
-    UOM:location.settings[0]
+    settings: location.settings
+
   }));
   return { locations };
 });

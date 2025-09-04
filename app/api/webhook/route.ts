@@ -221,7 +221,7 @@ const inventoryLocations = inventoryDetails.flatMap(item => {
 });
 
 
-console.log('Inventory Locations:', inventoryLocations);
+console.log('Inventory Locations:', JSON.stringify(inventoryLocations));
 
 const OrderDetails = {
     ...order,

@@ -206,8 +206,7 @@ const inventoryData = await fetchInventoryDetails(products, customerDetails.ware
 const inventoryDetails: InventoryItem[] = inventoryData.data;
 console.log('Inventory Details:', inventoryDetails);
 const inventoryLocations = inventoryDetails.flatMap(item => {
-  const productId = item.identity.product_id;
-  const sku = item.identity.sku;
+  
   const locations = item.locations.map(location => ({
     locationId: location.location_id,
     locationName: location.location_name,
@@ -217,14 +216,18 @@ const inventoryLocations = inventoryDetails.flatMap(item => {
   return locations;
 });
 
-console.log('Inventory Locations:', inventoryLocations);
+const inventory ={
+  ...inventoryDetails,
+  locations: inventoryLocations
+}
+console.log('Inventory Locations:', inventory);
 
 const OrderDetails = {
     ...order,
     customerDetails,
     products: productDetails,
     shipping_addresses:shippingDetails,
-    inventoryLocations
+    inventory
   };
 
 console.log("Order Export Output",OrderDetails);

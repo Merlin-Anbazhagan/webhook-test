@@ -208,8 +208,11 @@ console.log('Inventory Details:', inventoryDetails);
 const inventoryLocations = inventoryDetails.flatMap(item => {
   
   const productId = item.identity.product_id;
+  const sku= item.identity.sku;
 
   const locations = item.locations.map(location => ({
+    productId,
+    sku,
     locationId: location.location_id,
     locationName: location.location_name,
     availaleQuantity: location.available_to_sell,

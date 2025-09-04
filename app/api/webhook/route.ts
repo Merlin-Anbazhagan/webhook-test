@@ -203,7 +203,6 @@ console.log("Updated inventory response")
 
 const inventoryData = await fetchInventoryDetails(products, customerDetails.warehouseId);
 const inventoryDetails: InventoryItem[] = inventoryData.data;
-console.log('Inventory Details:', inventoryDetails);
 
 const inventoryLocations = inventoryDetails.flatMap(item => {
   
@@ -216,7 +215,7 @@ const inventoryLocations = inventoryDetails.flatMap(item => {
     locationId: location.location_id,
     locationName: location.location_name,
     availaleQuantity: location.available_to_sell,
-    settings: location.settings
+    UOM:location.settings[0].bin_picking_number
   }));
   return { locations };
 });

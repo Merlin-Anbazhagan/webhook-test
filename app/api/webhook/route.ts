@@ -232,7 +232,7 @@ const OrderDetails = {
     inventoryLocations
   };
 
-console.log("Order Export Output",OrderDetails);
+console.log("Order Export Output Sample",OrderDetails);
 
     return NextResponse.json({
       success: true,
